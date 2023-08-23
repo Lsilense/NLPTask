@@ -32,9 +32,9 @@ class model_cnn(nn.Module):
 
         self.dropout = nn.Dropout(dropout)
 
-    def forward(self, input):
+    def forward(self, input, device):
         # text = [batch size, sent len]
-        embedded = self.embedding(input)
+        embedded = self.embedding(input[0].to(device))
 
         # embedded = [batch size, sent len, emb dim]
 
