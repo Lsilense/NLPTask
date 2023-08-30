@@ -4,9 +4,9 @@ from torch.utils.data import DataLoader
 from model.model_bert_roberta import model_bert_roberta
 from model.lstm import model_lstm
 from model.cnn import model_cnn
-from dataloader import bert_token, data_token, word_idx
+from classification.dataloader import bert_token, data_token, word_idx
 from config import args
-from torch.utils.tensorboard import SummaryWriter
+# from torch.utils.tensorboard import SummaryWriter
 import numpy as np
 
 
@@ -46,14 +46,12 @@ def test(model, device, test_loader, criterion):
             correct += pred.eq(target.view_as(pred)).sum().item()
 
     test_loss /= len(test_loader.dataset)
-    print(
-        "\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.4f}%)\n".format(
-            test_loss,
-            correct,
-            len(test_loader.dataset),
-            100.0 * correct / len(test_loader.dataset),
-        )
-    )
+    print("Test set: Average loss: {:.4f}, Accuracy: {}/{} ({:.4f}%)\n".format(
+          test_loss,
+          correct,
+          len(test_loader.dataset),
+          100.0 * correct / len(test_loader.dataset)
+          ))
 
 
 class run_model:
@@ -63,23 +61,13 @@ class run_model:
 
         # 加载分类数据集
         train_dataset, test_dataset = data_token(args.csv_path, args.max_len)
-        self.train_loader = DataLoader(
-            dataset=train_dataset, batch_size=args.batch_size, shuffle=True
-        )
-        self.test_loader = DataLoader(
-            dataset=test_dataset, batch_size=args.batch_size, shuffle=False
-        )
+        self.train_loader = DataLoader(dataset=train_dataset, batch_size=args.batch_size, shuffle=True)
+        self.test_loader = DataLoader(dataset=test_dataset, batch_size=args.batch_size, shuffle=False)
 
         # 加载分类数据集bert编码
-        bert_train_dataset, bert_test_dataset = bert_token(
-            args.csv_path, args.max_len, args.bert_roberta_name
-        )
-        self.bert_train_loader = DataLoader(
-            dataset=bert_train_dataset, batch_size=args.batch_size, shuffle=True
-        )
-        self.bert_test_loader = DataLoader(
-            dataset=bert_test_dataset, batch_size=args.batch_size, shuffle=False
-        )
+        bert_train_dataset, bert_test_dataset = bert_token(args.csv_path, args.max_len, args.bert_roberta_name)
+        self.bert_train_loader = DataLoader(dataset=bert_train_dataset, batch_size=args.batch_size, shuffle=True)
+        self.bert_test_loader = DataLoader(dataset=bert_test_dataset, batch_size=args.batch_size, shuffle=False)
 
     def run_cnn(self):
         model = model_cnn(
@@ -143,8 +131,8 @@ if __name__ == "__main__":
     # writer.close()
 
     run = run_model()
-    # print("------cnn模型训练-----")
-    # run.run_cnn()
+    print("------cnn模型训练-----")
+    run.run_cnn()
     # print("------lstm模型训练-----")
     # run.run_lstm()
     # print("--{}模型训练--".format(args.bert_roberta_name))

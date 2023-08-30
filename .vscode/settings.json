@@ -1,0 +1,24 @@
+{
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.autopep8"
+    },
+    "editor.formatOnSave": true,
+    "python.formatting.provider": "autopep8",
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+    "python.linting.pylintArgs": [
+        "--disable=missing-module-docstring",
+        "--disable=missing-class-docstring",
+        "--disable=missing-function-docstring",
+        "--errors-only",
+        "--disable=E0401",
+        "--generated-members=numpy.* ,torch.* ,cv2.* , cv.*"
+    ],
+    "python.formatting.autopep8Args": [
+        "--aggressive",
+        "--max-line-length=120",
+        "--ignore=E402",
+        "--exclude=venv",
+        "--ignore-local-config"
+    ],
+}

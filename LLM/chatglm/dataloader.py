@@ -7,8 +7,10 @@ from transformers import AutoTokenizer, AutoConfig
 def preprocess(tokenizer, config, example, max_seq_length):
     prompt = example["instruction"]
     target = example["output"]
-    prompt_ids = tokenizer.encode(prompt, max_length=max_seq_length, truncation=True)
-    target_ids = tokenizer.encode(target, max_length=max_seq_length, truncation=True, add_special_tokens=False)
+    prompt_ids = tokenizer.encode(
+        prompt, max_length=max_seq_length, truncation=True)
+    target_ids = tokenizer.encode(
+        target, max_length=max_seq_length, truncation=True, add_special_tokens=False)
     input_ids = prompt_ids + target_ids + [config.eos_token_id]
 
     return {"input_ids": input_ids, "seq_len": len(prompt_ids)}
@@ -34,7 +36,7 @@ def read_jsonl(tokenizer, config, json_data, max_seq_length, skip_overlength=Fal
     return {"input_ids": input_ids_list, "seq_len": seqlen_list}
 
 
-def data_compose(features: list, tokenizer) -> dict:
+def data_compose(features: list, tokenizer):
     len_ids = [len(feature) for feature in features["input_ids"]]
     longest = max(len_ids)
 
@@ -42,7 +44,8 @@ def data_compose(features: list, tokenizer) -> dict:
     labels_list = []
 
     for ids_l, ids, seq_len in sorted(zip(len_ids, features["input_ids"], features["seq_len"]), key=lambda x: -x[0]):
-        labels = ([-100] * (seq_len - 1) + ids[(seq_len - 1):] + [-100] * (longest - ids_l))
+        labels = ([-100] * (seq_len - 1) + ids[(seq_len - 1):] +
+                  [-100] * (longest - ids_l))
         ids = ids + [tokenizer.pad_token_id] * (longest - ids_l)
         _ids = torch.LongTensor(ids)
         labels_list.append(torch.LongTensor(labels))
@@ -53,6 +56,7 @@ def data_compose(features: list, tokenizer) -> dict:
     train_dataset = TensorDataset(input_ids, labels)
 
     return train_dataset
+
 
 
 if __name__ == "__main__":

@@ -63,8 +63,8 @@ def bert_token(csv_path, max_len, model_name):
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     train_data_list, label_list = read_csv(csv_path)
     input_ids = []
-    token_type_ids= []
-    attention_mask= []
+    token_type_ids = []
+    attention_mask = []
     for data in train_data_list:
         output = tokenizer.encode_plus(
             data,
@@ -78,30 +78,26 @@ def bert_token(csv_path, max_len, model_name):
         token_type_ids.append(output["token_type_ids"])
         attention_mask.append(output["attention_mask"])
 
-
     input_ids_tensor = torch.LongTensor(input_ids)
     token_type_ids_tensor = torch.LongTensor(token_type_ids)
     attention_mask_tensor = torch.LongTensor(attention_mask)
     label_tensor = torch.LongTensor(label_list)
 
-    train_dataset = TensorDataset(input_ids_tensor,token_type_ids_tensor,attention_mask_tensor, label_tensor)
-    test_dataset = TensorDataset(input_ids_tensor,token_type_ids_tensor,attention_mask_tensor, label_tensor)
+    train_dataset = TensorDataset(input_ids_tensor, token_type_ids_tensor, attention_mask_tensor, label_tensor)
+    test_dataset = TensorDataset(input_ids_tensor, token_type_ids_tensor, attention_mask_tensor, label_tensor)
 
     return train_dataset, test_dataset
 
 
 if __name__ == "__main__":
     max_len = 512
-    csv_path = "/data/zhangxin/code/LLM/glm/tmp_nlptask/BasicDemo/data/ChnSentiCorp_htl_all.csv"
+    csv_path = "/data/zhangxin/code/LLM/glm/tmp_nlptask/BasicDemo/classification/data/ChnSentiCorp_htl_all.csv"
 
-    # train_dataset, test_dataset = data_token(csv_path, max_len)
+    train_dataset, test_dataset = data_token(csv_path, max_len)
     # print(train_dataset, test_dataset)
 
     # hfl/chinese-roberta-wwm-ext   bert-base-chinese
-    train_dataset, test_dataset = bert_token(csv_path, max_len, "hfl/chinese-roberta-wwm-ext") 
-    for idx,tpe,att,label in train_dataset:
-        print(att)
-
-
-
-       
+    # train_dataset, test_dataset = bert_token(csv_path, max_len, "hfl/chinese-roberta-wwm-ext")
+    # print(train_dataset.size())
+    # for idx,tpe,att,label in train_dataset:
+    #     print(att)
